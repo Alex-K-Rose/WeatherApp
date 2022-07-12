@@ -1,7 +1,6 @@
 from tkinter import *
 from tkinter import ttk
 from apiWeather import *
-import requests
 import datetime
 
 root = Tk()
@@ -10,28 +9,23 @@ root.title("Weather App")
 
 def func_run():
     if (len(cityVar.get()) != 0 and len(stateVar.get()) != 0):
-        funcRes =  getAll(cityVar.get(), stateVar.get())
+        funcRes = getAll(cityVar.get(), stateVar.get())
 
     elif len(cityVar.get()) != 0:
         funcRes = getAll(cityVar.get())
 
-    if isinstance(funcRes, str) is True:
-        print(funcRes)
+    temp = funcRes[0]['list'][0]['main']['temp']
+    feels_like = funcRes[0]['list'][0]['main']['feels_like']
+    pressure = funcRes[0]['list'][0]['main']['pressure']
+    humidity = funcRes[0]['list'][0]['main']['humidity']
+    sunrise = (datetime.datetime.fromtimestamp(funcRes[0]['city']['sunrise'])).time()
+    sunset = (datetime.datetime.fromtimestamp(funcRes[0]['city']['sunset'])).time()
+    description = funcRes[0]['list'][0]['weather'][0]['description']
 
-    else:
-        temp = funcRes[0]['list'][0]['main']['temp']
-        feels_like = funcRes[0]['list'][0]['main']['feels_like']
-        pressure = funcRes[0]['list'][0]['main']['pressure']
-        humidity = funcRes[0]['list'][0]['main']['humidity']
-        sunrise = (datetime.datetime.fromtimestamp(funcRes[0]['city']['sunrise'])).time()
-        sunset = (datetime.datetime.fromtimestamp(funcRes[0]['city']['sunset'])).time()
-        description = funcRes[0]['list'][0]['weather'][0]['description']
-
-        timezone = funcRes[0]['city']['timezone']
-        weather = f"\nWeather of: {cityVar.get()}\nTemperature (Farenheight): {temp}°\nFeels like: {feels_like}°\nPressure: {pressure} hPa\nHumidity: {humidity}\nInfo: {description}"
-        sun = f"\nSunrise at {sunrise}\n\n\nSunset at {sunset}"
-        moon = f"\n\n{funcRes[1]}"
-
+    #timezone = funcRes[0]['city']['timezone']
+    weather = f"\nWeather of: {cityVar.get()}\nTemperature (Farenheight): {temp}°\nFeels like: {feels_like}°\nPressure: {pressure} hPa\nHumidity: {humidity}\nInfo: {description}"
+    sun = f"\nSunrise at {sunrise}\n\n\nSunset at {sunset}"
+    moon = f"\n\n{funcRes[1]}"
 
     weather_box.delete('1.0', END)
     weather_box.insert(INSERT, weather)
@@ -60,13 +54,13 @@ def hide_moon():
     moon_box.place_forget()
     moonButton.configure(text="Show", command=show_moon)
 
+cityVar = StringVar(root)
+stateVar = StringVar(root)
+
 search = Label(root, text='Location Search:', font='Times 12').place(y=10)
 
 searchBarCity = Label(root, text='City', font='Times 12').place(y=30)
 searchBarState = Label(root, text='State (if relevant)', font='Times 12').place(y=30, x=200)
-
-cityVar = StringVar(root)
-stateVar = StringVar(root)
 
 enterLoc = Entry(root, textvariable=cityVar, width=24, font='Times 12').place(x=5, y=50)  # entry field
 enterState = Entry(root, textvariable=stateVar, width=5, font='Times 12').place(x=225, y=50)  # entry field

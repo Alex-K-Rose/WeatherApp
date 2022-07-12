@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="040e8d82-edf4-42ce-b3c0-1892c1cbb5f2" name="Changes" comment="First Commit" />
+    <list default="true" id="040e8d82-edf4-42ce-b3c0-1892c1cbb5f2" name="Changes" comment="First Commit">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apiWeather.py" beforeDir="false" afterPath="$PROJECT_DIR$/apiWeather.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mainWeather.py" beforeDir="false" afterPath="$PROJECT_DIR$/mainWeather.py" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />

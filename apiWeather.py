@@ -1,6 +1,5 @@
 import requests
 import json
-import datetime
 
 api_key="fd104cbd085aea7da712982efb90f497"
 moon_key = "3Y5U94C7DCCYMHKZHFF293Y9W"
@@ -33,8 +32,6 @@ def getWeather(weathReqURL):
     else:
         x = "get weath failed"
         return x
-
-    return x
 
 def getMoon(lat, lon, theDate):
     moonURL = "https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/"+lat+","+lon+"/"+theDate+"?key="+moon_key
