@@ -4,7 +4,7 @@ How to use Micro Service
 
 REQUEST
 - Add MilkshakeRpcClient() class in the main body of your application
-- Instantiate MilkshakeRpcClient object
+- Instantiate MilkshakeRpcClient object in backend
 - Use function to cal .call() method of class object or call it directly passing in location string
 - String must be city i.e. "Sandiego" or city and state seperated with comma and without spacing i.e. "Sandiego,CA"
 
