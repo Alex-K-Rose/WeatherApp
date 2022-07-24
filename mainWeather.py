@@ -26,6 +26,7 @@ def func_run():
     weather = f"\nWeather of: {cityVar.get()}\nTemperature (Farenheight): {temp}°\nFeels like: {feels_like}°\nPressure: {pressure} hPa\nHumidity: {humidity}\nInfo: {description}"
     sun = f"\nSunrise at {sunrise}\n\n\nSunset at {sunset}"
     moon = f"\n\n{funcRes[1]}"
+    milkshake = f"\n\n{funcRes[2][2:-1]}"
 
     weather_box.delete('1.0', END)
     weather_box.insert(INSERT, weather)
@@ -35,6 +36,9 @@ def func_run():
 
     moon_box.delete('1.0', END)
     moon_box.insert(INSERT, moon)
+
+    milkshake_box.delete('1.0', END)
+    milkshake_box.insert(INSERT, milkshake)
 
 def show_sun():
     sun_box.place(y=120, x=5)
@@ -46,13 +50,22 @@ def hide_sun():
     sunButton.configure(text="Show", command=show_sun)
 
 def show_moon():
-    moon_box.place(y=120, x=5)
+    moon_box.place(y=120, x=305)
     moonButton.configure(text="Hide", command=hide_moon)
 
 def hide_moon():
     moon_box.delete('1.0', END)
     moon_box.place_forget()
     moonButton.configure(text="Show", command=show_moon)
+
+def show_milkshake():
+    milkshake_box.place(y=120, x=605)
+    milkshakeButton.configure(text="Hide", command=hide_milkshake)
+
+def hide_milkshake():
+    milkshake_box.delete('1.0', END)
+    milkshake_box.place_forget()
+    milkshakeButton.configure(text="Show", command=show_milkshake)
 
 cityVar = StringVar(root)
 stateVar = StringVar(root)
@@ -74,6 +87,9 @@ sunButton.place(y=83, x=148)
 moonButton = Button(root, text = "Hide", command=hide_moon, font='Times 12')
 moonButton.place(y=83, x=415)
 
+milkshakeButton = Button(root, text = "Hide", command=hide_milkshake, font='Times 12')
+milkshakeButton.place(y=83, x=750)
+
 weather_curr = Label(root, text = "City Weather", font = 'Times 12').place(y=320, x=10)
 weather_box = Text(root, width=100, height =10)
 weather_box.config(state=NORMAL)
@@ -88,5 +104,10 @@ moon_curr = Label(root, text = "City Moonphase", font = 'Times 12').place(y=95, 
 moon_box = Text(root, width=30, height=10)
 moon_box.config(state=NORMAL)
 moon_box.place(y=120, x=305)
+
+milkshake_curr = Label(root, text = "Milkshake Conditions", font = 'Times 12').place(y=95, x=605)
+milkshake_box = Text(root, width=30, height=10)
+milkshake_box.config(state=NORMAL)
+milkshake_box.place(y=120, x=605)
 
 root.mainloop()

@@ -1,8 +1,47 @@
 import requests
 import json
+import pika
+import uuid
 
 api_key="fd104cbd085aea7da712982efb90f497"
 moon_key = "3Y5U94C7DCCYMHKZHFF293Y9W"
+
+class MilkshakeRpcClient(object):
+
+    def __init__(self):
+        self.connection = pika.BlockingConnection(
+            pika.ConnectionParameters(host='localhost'))
+
+        self.channel = self.connection.channel()
+
+        result = self.channel.queue_declare(queue='', exclusive=True)
+        self.callback_queue = result.method.queue
+
+        self.channel.basic_consume(
+            queue=self.callback_queue,
+            on_message_callback=self.on_response,
+            auto_ack=True)
+
+        self.response = None
+        self.corr_id = None
+
+    def on_response(self, ch, method, props, body):
+        if self.corr_id == props.correlation_id:
+            self.response = body
+
+    def call(self, n):
+        self.response = None
+        self.corr_id = str(uuid.uuid4())
+        self.channel.basic_publish(
+            exchange='',
+            routing_key='myQueue',
+            properties=pika.BasicProperties(
+                reply_to=self.callback_queue,
+                correlation_id=self.corr_id,
+            ),
+            body=str(n))
+        self.connection.process_data_events(time_limit=None)
+        return str(self.response)
 
 def getLoc(*loc_deets):
     if len(loc_deets)==1:
@@ -60,12 +99,14 @@ def getMoon(lat, lon, theDate):
 
 def getAll(*loc_deets):
     latLonInfo = getLoc(*loc_deets)
+    milkshake_rpc = MilkshakeRpcClient()
+    milkshakeInfo = milkshake_rpc.call(str(*loc_deets))
+
     weathInfo = getWeather(latLonInfo[0])
 
     theDate = weathInfo['city']['sunset']
 
-
     moonInfo = getMoon(str(latLonInfo[1]), str(latLonInfo[2]), str(theDate))
 
-    return (weathInfo, moonInfo)
+    return (weathInfo, moonInfo, milkshakeInfo)
 
