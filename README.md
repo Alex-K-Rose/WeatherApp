@@ -3,8 +3,9 @@
 How to use Micro Service
 
 REQUEST
+- Add MilkshakeRpcClient() class in the main body of your application
 - Instantiate MilkshakeRpcClient object
-- Use .call() method of class object passing in location string
+- Use function to cal .call() method of class object or call it directly passing in location string
 - String must be city i.e. "Sandiego" or city and state seperated with comma and without spacing i.e. "Sandiego,CA"
 
 RECIEVE
@@ -14,4 +15,4 @@ RECIEVE
   - "Not Milkshake Weather"
   - "Request Failed"
   
-  ![UML Sequence Diagram](https://github.com/Alex-K-Rose/WeatherApp/blob/master/WeatherApp.png?raw=true)
+  ![UML Sequence Diagram](https://github.com/Alex-K-Rose/WeatherApp/blob/master/WeatherApp(1).png?raw=true)
