@@ -1,7 +1,7 @@
 # WeatherApp
 
 How to use Micro Service
-Note: [This tutorial](https://www.rabbitmq.com/tutorials/tutorial-six-python.html) was used in the design of this message broker and provides a good overview of functionality
+Note: This tutorial ( https://www.rabbitmq.com/tutorials/tutorial-six-python.html ) was used in the design of this message broker and provides a good overview of functionality
 
 REQUEST
 - Add MilkshakeRpcClient() class in the main body of your application
