@@ -6,6 +6,43 @@ import uuid
 api_key="fd104cbd085aea7da712982efb90f497"
 moon_key = "3Y5U94C7DCCYMHKZHFF293Y9W"
 
+class MilkshakeLocRpcClient(object):
+
+    def __init__(self):
+        self.connection = pika.BlockingConnection(
+            pika.ConnectionParameters(host='localhost'))
+
+        self.channel = self.connection.channel()
+
+        result = self.channel.queue_declare(queue='', exclusive=True)
+        self.callback_queue = result.method.queue
+
+        self.channel.basic_consume(
+            queue=self.callback_queue,
+            on_message_callback=self.on_response,
+            auto_ack=True)
+
+        self.response = None
+        self.corr_id = None
+
+    def on_response(self, ch, method, props, body):
+        if self.corr_id == props.correlation_id:
+            self.response = body
+
+    def call(self, n):
+        self.response = None
+        self.corr_id = str(uuid.uuid4())
+        self.channel.basic_publish(
+            exchange='',
+            routing_key='twoQueue',
+            properties=pika.BasicProperties(
+                reply_to=self.callback_queue,
+                correlation_id=self.corr_id,
+            ),
+            body=str(n))
+        self.connection.process_data_events(time_limit=None)
+        return str(self.response)
+
 class MilkshakeRpcClient(object):
 
     def __init__(self):
@@ -48,19 +85,21 @@ def getLoc(*loc_deets):
         loc_url = 'http://api.openweathermap.org/geo/1.0/direct?q='+ loc_deets[0] +'&appid='+api_key
     elif len(loc_deets)==2:
         loc_url = 'http://api.openweathermap.org/geo/1.0/direct?q=' + loc_deets[0] + ',' +loc_deets[1]+'&appid=' + api_key
-    #elif loc_deets[0] is not False and loc_deets[1] is not False and loc_deets[2] is not False:
-        #loc_url = 'http://api.openweathermap.org/geo/1.0/direct?q=' + loc_deets[0] + ',' + loc_deets[1] + ',' + loc_deets[2]+'&appid=' + api_key
 
     loc_info = requests.get(loc_url)
     location = json.loads(loc_info.text)
 
-    if isinstance((location[0]['name']), str) is True:
+    if len(location)>0:
         lat = str(location[0]['lat'])
         lon = str(location[0]['lon'])
 
         weath_url = 'http://api.openweathermap.org/data/2.5/forecast?lat=' + lat +'&lon=' + lon +'&appid='+ api_key +'&units=imperial'
 
         return (weath_url, lat, lon)
+
+    else:
+        x = "Location not found"
+        return x
 
 def getWeather(weathReqURL):
     weath_info = requests.get(weathReqURL)
@@ -69,7 +108,7 @@ def getWeather(weathReqURL):
     if weather['cod'] == '200':
         return weather
     else:
-        x = "get weath failed"
+        x = "Location not found"
         return x
 
 def getMoon(lat, lon, theDate):
@@ -102,11 +141,21 @@ def getAll(*loc_deets):
     milkshake_rpc = MilkshakeRpcClient()
     milkshakeInfo = milkshake_rpc.call(str(*loc_deets))
 
-    weathInfo = getWeather(latLonInfo[0])
+    milkshakeLoc_rpc = MilkshakeLocRpcClient()
+    milkshakeLocs = milkshakeLoc_rpc.call(str(*loc_deets))
+    milkshakeLocs = milkshakeLocs[2:-1]
+    milkshakeLocs = json.loads(milkshakeLocs)
+    print(milkshakeLocs)
 
-    theDate = weathInfo['city']['sunset']
+    if type(latLonInfo) != str:
+        weathInfo = getWeather(latLonInfo[0])
 
-    moonInfo = getMoon(str(latLonInfo[1]), str(latLonInfo[2]), str(theDate))
+        theDate = weathInfo['city']['sunset']
 
-    return (weathInfo, moonInfo, milkshakeInfo)
+        moonInfo = getMoon(str(latLonInfo[1]), str(latLonInfo[2]), str(theDate))
+
+    else:
+        weathInfo = "Error"
+
+    return (weathInfo, moonInfo, milkshakeInfo, milkshakeLocs)
 
